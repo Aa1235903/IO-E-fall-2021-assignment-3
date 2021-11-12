@@ -1,0 +1,152 @@
+<html>
+<head>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/addons/p5.dom.js"></script>
+	<script src="p5.speech.js"></script>
+	<script>
+
+	var myVoice = new p5.Speech(); // new P5.Speech object
+
+	var menuLoaded = 0;
+	var label, input, checkbox, speakbutton, vslider, rslider, pslider; // UI
+	var currentType = '';
+
+	function setup()
+	{
+		// input dialog:
+		input = createInput("").attribute('placeholder', 'Place type here');;
+		input.style("width", 300);
+		input.style("height", 30);
+  		input.position(20, 130);
+		// checkbox:
+		checkbox = createInput(0, 1, 0);
+		checkbox.attribute("type", "checkbox");
+		checkbox.style("width", "15px");
+		checkbox.style("height", "15px");
+  		checkbox.position(170, 205);
+		// button:
+		speakbutton = createButton('Speak');
+  		speakbutton.position(20, 200);
+		speakbutton.style("width", "80px");
+		speakbutton.style("height", "30px");
+  		speakbutton.mousePressed(doSpeak);
+  		// sliders:
+  		vslider = createSlider(0., 100., 100.);
+  		vslider.position(20, 300);
+		vslider.style("width", "300px");
+		vslider.style("background", "0,0,0");
+  		vslider.mouseReleased(setVolume);
+  		rslider = createSlider(10., 200., 100.);
+  		rslider.position(20, 340);
+		rslider.style("width", "300px");
+  		rslider.mouseReleased(setRate);
+  		pslider = createSlider(1., 200., 100.);
+  		pslider.position(20, 380);
+		pslider.style("width", "300px");
+		pslider.style("background", "#000");
+  		pslider.mouseReleased(setPitch);
+		// labels:
+		label = createDiv("You can type circle, square, triangle and star in the search box");
+		label.position(20, 80);
+		label = createDiv("interrupt?");
+		label.position(200, 205);
+		label = createDiv("volume");
+		label.position(340, 300);
+		label = createDiv("rate");
+		label.position(340, 340);
+		label = createDiv("pitch");
+		label.position(340, 380);
+
+  		// say hello:
+		// myVoice.speak(input.value());
+
+		createCanvas(windowWidth, windowHeight);
+	}
+
+	function setVolume()
+	{
+		myVoice.setVolume(vslider.value()/100.);
+	}
+	function setRate()
+	{
+		myVoice.setRate(rslider.value()/100.);
+	}
+	function setPitch()
+	{
+		myVoice.setPitch(pslider.value()/100.);
+	}
+
+	function draw()
+	{
+		background(255,255,255);
+
+		
+		// make four squares 
+    	rect(windowWidth - 700, 100, 300, 300);
+    	rect(windowWidth - 400, 100, 300, 300);
+    	rect(windowWidth - 700, 400, 300, 300);
+    	rect(windowWidth - 400, 400, 300, 300);
+		// why draw when you can click?
+
+		textSize(40);
+		fill(233,0, 0);
+		if(currentType === "circle"){
+			// circle
+			text("circle", windowWidth - 600, 150)
+			ellipseMode(RADIUS);
+			ellipse(windowWidth - 550, 260, 80, 80);
+		}
+
+
+		if(currentType === "square"){
+			// square
+			text("square", windowWidth - 320, 150)
+			rect(windowWidth - 330, 180, 160, 160);
+    		noStroke(); 
+		}
+
+		if(currentType === "triangle"){
+			// triangle
+			text("triangle", windowWidth - 620, 450)
+			triangle(windowWidth - 550, 480, windowWidth - 650, 620, windowWidth - 450, 620);
+		}
+
+
+		if(currentType === "star"){
+			// star
+			text("star", windowWidth - 280, 450)
+			star(windowWidth - 250, 550, 40, 100, 5);
+		}
+	}
+
+	// star function
+	function star(x, y, radius1, radius2, npoints) {
+		let angle = TWO_PI / npoints;
+		let halfAngle = angle / 2.0;
+		beginShape();
+		for (let a = 0; a < TWO_PI; a += angle) {
+			let sx = x + cos(a) * radius2;
+			let sy = y + sin(a) * radius2;
+			vertex(sx, sy);
+			sx = x + cos(a + halfAngle) * radius1;
+			sy = y + sin(a + halfAngle) * radius1;
+			vertex(sx, sy);
+		}
+		endShape(CLOSE);
+	}
+
+	function doSpeak() //press speak button and get a search function
+	{
+		var text = input.value();
+		// Different text will haev different functions
+		if(text === "circle" || text === "square" || text === "triangle" || text === "star"){
+			currentType = text;
+		}
+		myVoice.interrupt = checkbox.elt.checked;
+		myVoice.speak(text); // debug printer for voice options
+	}
+</script>
+</head>
+<body>
+</body>
+</html>
